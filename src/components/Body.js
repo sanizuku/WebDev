@@ -1,8 +1,9 @@
 import RestaurantCard from "./RestaurantCard";
-import restaurantList from "../utils/mockData"
 import { useEffect, useState } from "react";
 import {swiggy_api_URL} from "../utils/constants"
 import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body=()=>{
   //Local State Variable - super powerfull state variable
@@ -11,10 +12,11 @@ const Body=()=>{
     const [searchText,setSearchText]=useState("")
     console.log("BodyRendered")
     
-    useEffect(()=>{
-        fetchData()
-    },[])
 
+  
+    useEffect(()=>{
+      fetchData()
+  },[])
     const fetchData = async () => {
          // handle the error using try... catch
    
@@ -47,7 +49,11 @@ const Body=()=>{
      
 
     }
-
+  
+    const onlineStatus=useOnlineStatus()
+    if(onlineStatus==false){
+      return <h1>Looks like internet not working!! Check your connection</h1>
+    }
     return listOfRestaurants.length===0?<Shimmer/>:(
         <div className="body">
             <div className="filter">
@@ -81,7 +87,7 @@ const Body=()=>{
             <div className="res-Container">
                 {filteredRestaurant.map((restaurant)=>{
                      return(
-                        <RestaurantCard key={restaurant.info.id} resData={restaurant}/>//built markup as well as logic returning jsx
+                        <Link key={restaurant.info.id}  to={"/restaurants/"+ restaurant.info.id}><RestaurantCard resData={restaurant}/></Link>//built markup as well as logic returning jsx
                      )
                 })}
                 
